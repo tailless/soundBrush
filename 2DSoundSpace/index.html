@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <!--char set (lang above)-->
+  <meta charset="utf-8">
+
+  <!--device/browser shizzle-->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="author" content="Ruth John (@rumyra)">
+  <meta name="dcterms.rightsHolder" content="Ruth John for Rumyra Ltd, United Kingdom, 2015">
+  <title>Lesson 3 | Web Audio Workshop</title>
+  <link rel="stylesheet" href="/assets/style.css">
+
+</head>
+<body>
+  <canvas height="500" width="1000"></canvas>
+  <div class="container">
+
+  </div>
+
+  <script type="text/javascript">
+
+  // declare stuff for use later on
+  // const laserButton = document.querySelector('button[data-sound="laser"]');
+
+  //2D drawing stuff here:
+  const cx = document.querySelector("canvas").getContext("2d");
+  var drawing = false;
+
+  // audio stuff starts here
+  // create new context
+  const context = new window.AudioContext;
+
+  // set sound source
+  const soundSource = context.createPanner();
+  // set intital position of sound
+  soundSource.setPosition(0, 0, 5);
+
+  var noise;
+
+  var startPosX, startPosY;
+
+
+function startNoise(){
+  noise = context.createOscillator();
+  // set our frequency value - play with this later!
+  noise.frequency.value = 500;
+
+  // set our osciallator type - can be sine, square, triangle, sawtooth
+  noise.type = 'sine';
+
+  noise.connect(soundSource).connect(context.destination);
+  noise.start(context.currentTime);
+}
+
+
+  // drop the frequency when it starts
+  //laser.frequency.exponentialRampToValueAtTime(10, context.currentTime+10);
+
+  // we need a gain node!
+  //  laserGain = context.createGain();
+
+  // make sure gain is 1 when we start
+  //  laserGain.gain.setValueAtTime(1, context.currentTime);
+
+  // drop the volume when it starts
+  //  laserGain.gain.exponentialRampToValueAtTime(0.001, context.currentTime+9.9);
+
+  // connect our audio graph
+  //  laser.connect(laserGain).connect(context.destination);
+  //laser.connect(context.destination);
+  // set our start and stop times
+
+  //  laser.stop(context.currentTime+10);
+
+
+  this.addEventListener("mousedown", function(evt) {
+    console.log("mousedown");
+
+    startPosX = evt.clientX;
+    startPosY = evt.clientY;
+    // start the noise
+    startNoise();
+
+    cx.lineWidth = 3;
+    cx.strokeStyle = "gray";
+    cx.beginPath();
+    cx.moveTo(evt.clientX, evt.clientY);
+
+    // when mouse moves
+    // this.addEventListener("mousemove", draw);
+    drawing  = true;
+  });
+
+  this.addEventListener("mouseup", function(evt) {
+    console.log("mouseup");
+    // stop the noise
+   if(noise) noise.stop();
+    //  this.removeEventListener("mousemove", draw);
+    drawing = false;
+
+  });
+
+  this.addEventListener("mousemove", function(evt) {
+    if(!drawing) return;
+    console.log("draw", (evt.clientX-startPosX)/2, (evt.clientY-startPosY)/2 );
+    
+    cx.lineTo(evt.clientX, evt.clientY);
+    cx.stroke();
+
+    // modify the noise
+    noise.frequency.value = evt.clientX;
+
+    // re-set sound source
+    soundSource.setPosition((evt.clientX-startPosX)/2, (evt.clientY-startPosY)/2, (evt.clientY-startPosY)/2);
+    // re-set sound source
+    //soundSource.setPosition((evt.clientX-startPosX)/10, (evt.clientY-startPosY)/10, (evt.clientY-startPosY)/10);
+  });
+
+
+</script>
+
+</body>
+</html>
