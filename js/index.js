@@ -28,7 +28,7 @@ var controllerLog = 0;
 
 init();
 initGeometry();
-//initSound():
+initSound();
 animate();
 
 function init() {
@@ -114,6 +114,8 @@ function init() {
 function initSound(){
 // init audio here code in here
  sound = new SoundController();
+
+ console.log("sound", sound );
 }
 
 
@@ -377,7 +379,12 @@ function handleController( controller ) {
       stroke( controller, point1, point2, matrix1, matrix2 );
       if(controllerLog == 0)  controllerLog = 1;
 
+      sound.play(controller.position, point1, controller.getColor(), controller.getSize() );
+
     }
+    /*else{
+      sound.stop();
+    }*/
 
     point2.copy( point1 );
     matrix2.copy( matrix1 );
@@ -385,6 +392,7 @@ function handleController( controller ) {
   }
 
 }
+
 
 function animate() {
 
